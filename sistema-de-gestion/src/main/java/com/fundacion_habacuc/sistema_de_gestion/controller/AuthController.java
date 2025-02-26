@@ -1,43 +1,52 @@
 package com.fundacion_habacuc.sistema_de_gestion.controller;
 
-import com.fundacion_habacuc.sistema_de_gestion.dto.LoginRequest;
-import com.fundacion_habacuc.sistema_de_gestion.security.JwtService;
-import com.fundacion_habacuc.sistema_de_gestion.entity.Usuario;
-import com.fundacion_habacuc.sistema_de_gestion.repository.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.fundacion_habacuc.sistema_de_gestion.entity.User;
+import com.fundacion_habacuc.sistema_de_gestion.repository.UserRepository;
+import com.fundacion_habacuc.sistema_de_gestion.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
-    private final UsuarioRepository usuarioRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // REGISTRO (Solo Admin)
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')") // Solo ADMIN puede registrar
+    public User registerUser(@RequestBody User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    // LOGIN con email y contraseña, devuelve un JWT
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(request.getEmail());
+    public Map<String, String> loginUser(@RequestBody User user) {
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
 
-        if (usuario.isPresent() && passwordEncoder.matches(request.getPassword(), usuario.get().getPassword())) {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
+        if (existingUser.isPresent() && passwordEncoder.matches(user.getPassword(), existingUser.get().getPassword())) {
+            String token = jwtUtil.generateToken(existingUser.get().getEmail(), existingUser.get().getRole());
 
-            String token = jwtService.generateToken(usuario.get());
-            return ResponseEntity.ok(token);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", existingUser.get().getRole());
+            return response;
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+        throw new RuntimeException("Credenciales incorrectas");
     }
 }
