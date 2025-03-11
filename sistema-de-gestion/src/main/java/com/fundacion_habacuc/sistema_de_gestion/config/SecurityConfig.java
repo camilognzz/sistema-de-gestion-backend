@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/voluntarios/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/students/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/voluntarios/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/v1/contactos-estrategicos/**").hasAnyAuthority("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

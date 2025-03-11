@@ -1,6 +1,5 @@
 package com.fundacion_habacuc.sistema_de_gestion.controller;
 
-import com.fundacion_habacuc.sistema_de_gestion.entity.Student;
 import com.fundacion_habacuc.sistema_de_gestion.entity.Voluntario;
 import com.fundacion_habacuc.sistema_de_gestion.service.VoluntarioService;
 import org.springframework.beans.factory.annotation.Autowired;
