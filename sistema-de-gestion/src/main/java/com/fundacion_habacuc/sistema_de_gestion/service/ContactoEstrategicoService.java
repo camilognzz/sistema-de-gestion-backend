@@ -1,7 +1,6 @@
 package com.fundacion_habacuc.sistema_de_gestion.service;
 
 import com.fundacion_habacuc.sistema_de_gestion.entity.ContactoEstrategico;
-import com.fundacion_habacuc.sistema_de_gestion.entity.Voluntario;
 import com.fundacion_habacuc.sistema_de_gestion.repository.ContactoEstrategicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
