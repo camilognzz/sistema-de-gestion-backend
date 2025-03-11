@@ -110,7 +110,7 @@ public class UserManagementService {
         try {
             List<User> result = userRepository.findAll();
             if (!result.isEmpty()) {
-                reqRes.setOurUsersList(result);
+                reqRes.setUsersList(result);
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("Successful");
             } else {
@@ -130,7 +130,7 @@ public class UserManagementService {
         ReqRes reqRes = new ReqRes();
         try {
             User usersById = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User Not found"));
-            reqRes.setOurUsers(usersById);
+            reqRes.setUser(usersById);
             reqRes.setStatusCode(200);
             reqRes.setMessage("Users with id '" + id + "' found successfully");
         } catch (Exception e) {
@@ -168,7 +168,6 @@ public class UserManagementService {
                 User existingUser = userOptional.get();
                 existingUser.setEmail(updatedUser.getEmail());
                 existingUser.setName(updatedUser.getName());
-                existingUser.setCity(updatedUser.getCity());
                 existingUser.setRole(updatedUser.getRole());
 
                 // Check if password is present in the request
@@ -178,7 +177,7 @@ public class UserManagementService {
                 }
 
                 User savedUser = userRepository.save(existingUser);
-                reqRes.setOurUsers(savedUser);
+                reqRes.setUser(savedUser);
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("User updated successfully");
             } else {
@@ -198,7 +197,7 @@ public class UserManagementService {
         try {
             Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isPresent()) {
-                reqRes.setOurUsers(userOptional.get());
+                reqRes.setUser(userOptional.get());
                 reqRes.setStatusCode(200);
                 reqRes.setMessage("successful");
             } else {
