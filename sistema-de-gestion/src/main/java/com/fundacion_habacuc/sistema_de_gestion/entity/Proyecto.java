@@ -28,11 +28,14 @@ public class Proyecto {
     @Column(nullable = false)
     private LocalDate fechaInicio;
 
+    @Column(nullable = false)
+    private LocalDate fechaFin;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoProyecto estado;
 
     public enum EstadoProyecto {
-        EN_PROGRESO, FINALIZADO, CANCELADO
+        SIN_INICIAR, EN_PROGRESO, FINALIZADO, CANCELADO
     }
 }

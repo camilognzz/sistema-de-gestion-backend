@@ -21,7 +21,7 @@ public class Voluntario {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(length = 100)
     private String email;
 
     @Column(length = 20)

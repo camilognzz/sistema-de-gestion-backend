@@ -10,22 +10,37 @@ import java.util.Optional;
 
 @Service
 public class ContactoEstrategicoService {
-    @Autowired
-    ContactoEstrategicoRepository contactoEstrategicoRepository;
 
-    public List<ContactoEstrategico> getContactosEstrategicos(){
+    @Autowired
+    private ContactoEstrategicoRepository contactoEstrategicoRepository;
+
+    public List<ContactoEstrategico> getContactosEstrategicos() {
         return contactoEstrategicoRepository.findAll();
     }
 
-    public Optional<ContactoEstrategico> getContactoEstrategico(Long id){
+    public Optional<ContactoEstrategico> getContactoEstrategico(Long id) {
         return contactoEstrategicoRepository.findById(id);
     }
 
-    public void savOrUpdate(ContactoEstrategico contactoEstrategico){
-        contactoEstrategicoRepository.save(contactoEstrategico);
+    public ContactoEstrategico createContactoEstrategico(ContactoEstrategico contactoEstrategico) {
+        // Para creación, el ID debe ser null (lo genera la BD)
+        if (contactoEstrategico.getId() != null) {
+            contactoEstrategico.setId(null);
+        }
+        // Aquí podrías agregar validaciones adicionales si es necesario
+        return contactoEstrategicoRepository.save(contactoEstrategico);
     }
 
-    public void delete(Long id){
+    public ContactoEstrategico updateContactoEstrategico(ContactoEstrategico contactoEstrategico) {
+        // Verificamos que el contacto exista
+        if (contactoEstrategico.getId() == null || !contactoEstrategicoRepository.existsById(contactoEstrategico.getId())) {
+            return null;
+        }
+        // Aquí podrías agregar validaciones adicionales si es necesario
+        return contactoEstrategicoRepository.save(contactoEstrategico);
+    }
+
+    public void delete(Long id) {
         contactoEstrategicoRepository.deleteById(id);
     }
 }

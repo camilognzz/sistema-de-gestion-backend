@@ -30,22 +30,24 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request-> request.requestMatchers("/auth/**", "/public/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/auth/**", "/public/**").permitAll()
+                        .requestMatchers("/admin/get-all-users").hasAnyAuthority("ADMIN", "USER") // Nueva regla específica
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // Mantener restricción general
+                        .requestMatchers("/api/financial/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/api/voluntarios/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/students/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/voluntarios/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/contactos-estrategicos/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/v1/proyectos/**").hasAnyAuthority("ADMIN", "USER")
                         .anyRequest().authenticated())
-                .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthFilter, UsernamePasswordAuthenticationFilter.class
-                );
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
     @Bean

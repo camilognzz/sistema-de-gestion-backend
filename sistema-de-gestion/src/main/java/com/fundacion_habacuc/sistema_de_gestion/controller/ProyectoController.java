@@ -3,6 +3,8 @@ package com.fundacion_habacuc.sistema_de_gestion.controller;
 import com.fundacion_habacuc.sistema_de_gestion.entity.Proyecto;
 import com.fundacion_habacuc.sistema_de_gestion.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +18,32 @@ public class ProyectoController {
     private ProyectoService proyectoService;
 
     @GetMapping
-    public List<Proyecto> getAll(){
-        return proyectoService.getProyectos();
+    public ResponseEntity<List<Proyecto>> getAll() {
+        return ResponseEntity.ok(proyectoService.getProyectos());
     }
 
     @GetMapping("/{id}")
-    public Optional<Proyecto> getById(@PathVariable("id") Long id){
-        return proyectoService.getProyecto(id);
+    public ResponseEntity<Proyecto> getById(@PathVariable("id") Long id) {
+        Optional<Proyecto> proyecto = proyectoService.getProyecto(id);
+        return proyecto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public void saveUpdate(@RequestBody Proyecto proyecto){
-        proyectoService.savOrUpdate(proyecto);
+    public ResponseEntity<Proyecto> createProyecto(@RequestBody Proyecto proyecto) {
+        Proyecto createdProyecto = proyectoService.createProyecto(proyecto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdProyecto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Proyecto> updateProyecto(@PathVariable("id") Long id, @RequestBody Proyecto proyecto) {
+        proyecto.setId(id); // Aseguramos que el ID coincida con la URL
+        Proyecto updatedProyecto = proyectoService.updateProyecto(proyecto);
+        return updatedProyecto != null ? ResponseEntity.ok(updatedProyecto) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void getAll(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteProyecto(@PathVariable("id") Long id) {
         proyectoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

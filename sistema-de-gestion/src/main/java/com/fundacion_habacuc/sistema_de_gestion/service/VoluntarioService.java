@@ -10,22 +10,37 @@ import java.util.Optional;
 
 @Service
 public class VoluntarioService {
-    @Autowired
-    VoluntarioRepository voluntarioRepository;
 
-    public List<Voluntario> getVoluntarios(){
+    @Autowired
+    private VoluntarioRepository voluntarioRepository;
+
+    public List<Voluntario> getVoluntarios() {
         return voluntarioRepository.findAll();
     }
 
-    public Optional<Voluntario> getVoluntario(Long id){
+    public Optional<Voluntario> getVoluntario(Long id) {
         return voluntarioRepository.findById(id);
     }
 
-    public void savOrUpdate(Voluntario voluntario){
-        voluntarioRepository.save(voluntario);
+    public Voluntario createVoluntario(Voluntario voluntario) {
+        // Para creación, el ID debe ser null (lo genera la BD)
+        if (voluntario.getId() != null) {
+            voluntario.setId(null);
+        }
+        // Aquí podrías agregar validaciones adicionales si es necesario
+        return voluntarioRepository.save(voluntario);
     }
 
-    public void delete(Long id){
+    public Voluntario updateVoluntario(Voluntario voluntario) {
+        // Verificamos que el voluntario exista antes de actualizar
+        if (voluntario.getId() == null || !voluntarioRepository.existsById(voluntario.getId())) {
+            return null;
+        }
+        // Aquí podrías agregar validaciones adicionales si es necesario
+        return voluntarioRepository.save(voluntario);
+    }
+
+    public void delete(Long id) {
         voluntarioRepository.deleteById(id);
     }
 }
