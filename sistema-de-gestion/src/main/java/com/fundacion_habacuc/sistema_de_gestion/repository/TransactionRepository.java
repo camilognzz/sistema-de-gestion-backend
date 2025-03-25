@@ -1,6 +1,7 @@
 package com.fundacion_habacuc.sistema_de_gestion.repository;
 
 import com.fundacion_habacuc.sistema_de_gestion.entity.FinancialTransaction;
+import com.fundacion_habacuc.sistema_de_gestion.entity.TransactionCategory;
 import com.fundacion_habacuc.sistema_de_gestion.entity.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface TransactionRepository extends JpaRepository<FinancialTransactio
 
     @Query("SELECT SUM(t.amount) FROM FinancialTransaction t WHERE t.type = :type")
     Double sumByType(@Param("type") TransactionType type);
+
+    boolean existsByCategory(TransactionCategory category);  // ← Agregar este método
 }

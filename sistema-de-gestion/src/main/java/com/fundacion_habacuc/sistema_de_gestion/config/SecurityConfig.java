@@ -35,9 +35,10 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**", "/public/**").permitAll()
-                        .requestMatchers("/admin/get-all-users").hasAnyAuthority("ADMIN", "USER") // Nueva regla específica
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // Mantener restricción general
+                        .requestMatchers("/admin/get-all-users").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/financial/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/categories/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/students/**").hasAnyAuthority("ADMIN", "USER")
