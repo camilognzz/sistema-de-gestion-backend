@@ -25,6 +25,19 @@ public class FinancialController {
                 .body(financialService.createTransaction(transactionDTO));
     }
 
+    @PutMapping("/transactions/{id}")
+    public ResponseEntity<FinancialTransaction> updateTransaction(
+            @PathVariable Long id,
+            @Validated @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(financialService.updateTransaction(id, transactionDTO));
+    }
+
+    @DeleteMapping("/transactions/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        financialService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/balance")
     public ResponseEntity<Double> getCurrentBalance() {
         return ResponseEntity.ok(financialService.getCurrentBalance());
@@ -35,5 +48,10 @@ public class FinancialController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         return ResponseEntity.ok(financialService.getTransactionsByPeriod(start, end));
+    }
+
+    @GetMapping("/transactions/{id}")
+    public ResponseEntity<FinancialTransaction> getTransactionById(@PathVariable Long id) {
+        return ResponseEntity.ok(financialService.getTransactionById(id));
     }
 }
