@@ -23,6 +23,7 @@ public class ReqRes {
     private String email;
     private String password;
     private User User;
+    private String profilePicture;
     private List<User> UsersList;
 
 }
